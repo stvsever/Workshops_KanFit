@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+  Statische landingspagina die naar de twee stakeholderworkshops verwijst.
+  Dit bestand wordt NIET gegenereerd; de twee workshops zelf staan in
+  hulpverleners/index.html en kankeroverlevers/index.html (die wel gegenereerd worden).
+-->
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KanFit - Stakeholderworkshops</title>
+<style>
+  :root{--bg:#f5f7f8;--panel:#fff;--ink:#182029;--muted:#5b6673;--line:#e3e8ec;
+        --brand:#1f6f6b;--brand-ink:#0e4f4b;--brand-soft:#e6f1f0;
+        --shadow:0 1px 3px rgba(20,30,45,.07),0 8px 22px rgba(20,30,45,.06);}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--ink);line-height:1.55;min-height:100vh;
+       display:flex;align-items:center;justify-content:center;padding:24px}
+  .wrap{max-width:760px;width:100%}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13.5px;margin:0 0 22px}
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  a.card{display:block;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);
+         border-radius:14px;padding:20px 22px;box-shadow:var(--shadow);transition:transform .1s ease}
+  a.card:hover{transform:translateY(-2px)}
+  a.card .kicker{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand)}
+  a.card h2{font-size:17px;margin:6px 0 6px}
+  a.card p{font-size:13px;color:var(--muted);margin:0}
+  .go{display:inline-block;margin-top:14px;font-weight:700;font-size:13px;color:var(--brand-ink)}
+  footer{margin-top:22px;font-size:12px;color:var(--muted)}
+  @media (max-width:640px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>KanFit &middot; Stakeholderworkshops</h1>
+  <p class="sub">SPARK-CS / KanFit &middot; WP1.1 &middot; kies de workshop die op u van toepassing is. Elke workshop duurt ongeveer een uur en kan tussendoor gepauzeerd worden.</p>
+  <div class="cards">
+    <a class="card" href="hulpverleners/index.html">
+      <div class="kicker">Voor hulpverleners</div>
+      <h2>Veiligheid en geschiktheid</h2>
+      <p>Vier taken: de exclusiecriteria voor deelname, de kankerspecifieke rode vlaggen, de oranje
+         vlaggen of barrières, en de koppeling tussen barrière en fysieke activiteit.</p>
+      <span class="go">Start &rarr;</span>
+    </a>
+    <a class="card" href="kankeroverlevers/index.html">
+      <div class="kicker">Voor kankeroverlevers</div>
+      <h2>Drempels en oplossingen</h2>
+      <p>Twee taken vanuit je eigen ervaring: welke barrières om te bewegen herken je, en zou een
+         voorgestelde copingstrategie echt helpen bij zo'n barrière? Wat ontbreekt er nog?</p>
+      <span class="go">Start &rarr;</span>
+    </a>
+  </div>
+  <footer>Antwoorden blijven lokaal op het eigen scherm; er wordt niets automatisch verstuurd. Op het
+    einde worden ze opgeslagen als bestand en per e-mail aan het onderzoeksteam bezorgd.</footer>
+</div>
+</body>
+</html>
