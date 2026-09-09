@@ -62,6 +62,10 @@ hulpverleners: diploma, functie, jaren ervaring, frequentie van contact met kank
 deelnemers die kanker hebben gehad: diagnose, behandeling, tijd sinds het einde van de primaire
 behandeling).
 
+Het bestand is leesbaar zonder de pagina erbij: bij elk antwoord staat de vraag die gesteld werd, de
+tekst van wat u beoordeeld hebt en het opschrift van de knop die u koos. U kan het dus zelf openen en
+nalezen voor u het doorstuurt.
+
 Uw naam, e-mailadres of andere rechtstreeks identificerende gegevens worden **nergens gevraagd** en
 staan dus ook niet in het bestand. Uw e-mailadres is het onderzoeksteam natuurlijk wel bekend zodra u
 het bestand doormailt; het team codeert de bestanden en verwerkt ze vertrouwelijk, conform de GDPR en

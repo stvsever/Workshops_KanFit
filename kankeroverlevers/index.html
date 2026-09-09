@@ -976,32 +976,112 @@ function setCancer(c, el){
 }
 
 // ---- export ----------------------------------------------------------------
-function exportJSON(){
-  // Enrich each judgement with its hidden metadata so the export is directly analysable
-  // (participant choice vs model vs reference knowledge, control vs discrepancy item).
-  const enriched={}, background={}, followup={};
-  Object.entries(answers).forEach(([id,a])=>{
-    if(id.startsWith('bg:')){ background[id.slice(3)]=a; return; }   // broken out, not duplicated
-    if(id.startsWith('fu:')){ followup[id.slice(3)]=a; return; }
-    const m = ADJ_INDEX[id];
-    enriched[id] = m
-      ? Object.assign({}, a, {item_kind:m.kind, dataset:m.dataset, task:m.task,
-                              barrier:m.barrier, coping:m.coping, activity:m.activity, person:m.person,
-                              model_label:m.llm_label, reference_label:m.expert_label,
-                              model_probability:m.llm_prob})
-      : a;
+// The exported file has to stand on its own. It is mailed to the research team without the page it
+// came from, so an entry like {"bar:exp_1": {"choice": "ja"}} is not enough: nobody can tell which
+// barrier that was, and "ja" means "Relevant" in one task and "Akkoord" in another. Every item
+// therefore carries the question it answered, the text of what was judged, and the label of the
+// button that was pressed. Items are written in the order the participant saw them, not the order
+// they happened to answer them in, and unanswered items are included too, so a skipped item is
+// visibly skipped rather than silently absent.
+function plainText(html){
+  const d = document.createElement("div");
+  d.innerHTML = html || "";
+  return (d.textContent || "").replace(/\s+/g, " ").trim();
+}
+function answerOf(id, sec){
+  const a = answers[id] || {};
+  const opts = sec.choices || {};
+  return {answered: !!a.choice,
+          choice: a.choice || null,
+          choice_label: a.choice ? (opts[a.choice] || a.choice) : null,
+          comment: a.comment || ""};
+}
+function exportItems(){
+  const items = [];
+  CONTENT.sections.forEach(sec => {
+    const common = pos => ({position: pos, section: sec.id, task: secNo(sec.id),
+                            task_title: sec.title || sec.nav,
+                            question: plainText(sec.question || "")});
+    if(sec.kind === "flags"){
+      flagsFor(sec).forEach(f => items.push(Object.assign(common(items.length + 1), {
+        id: "flag:" + f.id, item_type: "flag", level: f.level, group: f.group,
+        cancers: f.cancers || [], label: f.label, description: f.description,
+        sources: f.sources || []}, answerOf("flag:" + f.id, sec))));
+    }
+    if(sec.kind === "barriers"){
+      barriersFor(sec).forEach(b => items.push(Object.assign(common(items.length + 1), {
+        id: "bar:" + b.id, item_type: "barrier", dataset: sec.dataset, group: b.group,
+        cancers: b.cancers || [], domain: b.domain || null, label: b.label,
+        description: b.description || ""}, answerOf("bar:" + b.id, sec))));
+    }
+    if(sec.kind === "adjudicate"){
+      ((DATA.adjudication && DATA.adjudication[sec.dataset]) || []).forEach(it =>
+        items.push(Object.assign(common(items.length + 1), {
+          id: it.id, item_type: "pair", dataset: sec.dataset,
+          activity: it.activity || null, barrier: it.barrier || null, coping: it.coping || null,
+          // hidden while judging, carried here for the analysis
+          item_kind: it.kind, model_label: it.llm_label, reference_label: it.expert_label,
+          model_probability: it.llm_prob}, answerOf(it.id, sec))));
+    }
   });
-  const ids=allItemIds();
-  const payload={exported:new Date().toISOString(), workshop:CONTENT.mode,
-                 schema_version:2,
-                 build:{run_mode:DATA.run_mode||null, model:DATA.model||null,
-                        built:DATA.built||null},
-                 progress:{answered:ids.filter(i=>answers[i]&&answers[i].choice).length, total:ids.length},
-                 background:background, followup:followup, answers:enriched};
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob); const a=document.createElement('a');
-  const stamp=new Date().toISOString().slice(0,10);
-  a.href=url; a.download=`kanfit_workshop_${CONTENT.mode}_${stamp}.json`; a.click(); URL.revokeObjectURL(url);
+  return items;
+}
+function exportOpen(){
+  const out = [];
+  CONTENT.sections.forEach(sec => {
+    const fields = (sec.kind === "open" ? (sec.fields || []) : []).concat(sec.extra_open || []);
+    fields.forEach(f => {
+      const text = ((answers["open:" + f.id] || {}).comment || "");
+      out.push({id: "open:" + f.id, section: sec.id, task: secNo(sec.id),
+                task_title: sec.title || sec.nav, question: plainText(f.label),
+                answered: !!text.trim(), answer: text});
+    });
+  });
+  return out;
+}
+function exportFields(kind, prefix){
+  const out = [];
+  CONTENT.sections.forEach(sec => {
+    (kind === "background" ? (sec.kind === "background" ? sec.fields || [] : [])
+                           : (sec.followup || [])).forEach(f => {
+      const a = answers[prefix + f.id] || {};
+      out.push({id: f.id, question: plainText(f.label), options: f.options || null,
+                answered: !!(a.value || (a.comment || "").trim()),
+                value: a.value || null, comment: a.comment || ""});
+    });
+  });
+  return out;
+}
+function exportJSON(){
+  const items = exportItems();
+  const open = exportOpen();
+  // One line per task, so the file says what was asked and how much of it was answered without
+  // anyone having to count. An open-question task counts its questions; the rest count their items.
+  const tasks = CONTENT.sections.filter(s => ["flags", "barriers", "adjudicate", "open"].includes(s.kind))
+    .map(s => {
+      const mine = (s.kind === "open" ? open : items).filter(i => i.section === s.id);
+      return {task: secNo(s.id), section: s.id, title: s.title || s.nav, kind: s.kind,
+              question: plainText(s.question || ""), choices: s.choices || null,
+              items: mine.length, answered: mine.filter(i => i.answered).length};
+    });
+  const payload = {
+    exported: new Date().toISOString(),
+    workshop: CONTENT.mode,
+    workshop_title: CONTENT.header_title || "",
+    schema_version: 3,
+    build: {run_mode: DATA.run_mode || null, model: DATA.model || null, built: DATA.built || null},
+    progress: {answered: items.filter(i => i.answered).length, total: items.length},
+    tasks: tasks,
+    background: exportFields("background", "bg:"),
+    followup: exportFields("followup", "fu:"),
+    open_questions: open,
+    items: items,
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type: "application/json"});
+  const url = URL.createObjectURL(blob); const a = document.createElement("a");
+  const stamp = new Date().toISOString().slice(0, 10);
+  a.href = url; a.download = `kanfit_workshop_${CONTENT.mode}_${stamp}.json`; a.click();
+  URL.revokeObjectURL(url);
 }
 function resetAll(){ if(confirm("Alle antwoorden wissen?")){ answers={}; save(); renderBodies(); } }
 
