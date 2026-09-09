@@ -40,6 +40,11 @@ statistieken van elders opgehaald. U kan de pagina zelfs offline invullen.
 **U kan alles wissen.** De knop *Wissen* bovenaan verwijdert al uw antwoorden uit de opslag van de
 browser. Ook het legen van uw browsergegevens verwijdert ze.
 
+**Weigert uw browser opslag, dan werkt de workshop nog steeds.** Sommige browsers laten geen site-
+gegevens toe, en dat merkt u aan een oranje balk bovenaan de pagina. Uw antwoorden blijven dan enkel
+bewaard zolang de pagina openstaat. Invullen en het bestand opslaan werken gewoon; enkel pauzeren en
+later verdergaan lukt dan niet.
+
 ### Waar u wel op moet letten
 
 * Uw antwoorden staan **per toestel en per browser**. Begint u op uw laptop en gaat u verder op uw
