@@ -96,10 +96,11 @@ Na een minuut staat de site op `https://stvsever.github.io/Workshops_KanFit/`.
 
 ## Technische noot
 
-De pagina's zijn **gegenereerd**; pas ze niet met de hand aan. Ze komen uit de bronrepository van het
-project, waar de teksten in een apart tekstbestand per workshop staan en de inhoud uit de kennisbron
-wordt opgebouwd. Een aanpassing gebeurt daar, waarna de pagina's opnieuw gebouwd en hierheen
-gekopieerd worden.
+De pagina's zijn **gegenereerd**. Ze komen uit de bronrepository van het project, waar de teksten in
+een apart tekstbestand per workshop staan en de inhoud uit de kennisbron wordt opgebouwd. Een
+aanpassing gebeurt daar, waarna de pagina's opnieuw gebouwd en hierheen gekopieerd worden. Wie hier
+rechtstreeks in een `index.html` schrijft, moet die wijziging dus laten overzetten naar de bron,
+anders is ze bij de volgende bouw weer verdwenen.
 
 De opslagsleutels in de browser zijn `coppercan_workshop_hv` en `coppercan_workshop_cs`; de
 geëxporteerde bestanden heten `kanfit_workshop_hv_<datum>.json` en `kanfit_workshop_cs_<datum>.json`.
