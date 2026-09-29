@@ -1,6 +1,6 @@
 # KanFit workshops
 
-Twee online workshops van het **KanFit-project** (SPARK-CS, WP1.1, Universiteit Gent), gefinancierd
+Twee online workshops van het **KanFit-project** (Universiteit Gent), gefinancierd
 door Kom op tegen Kanker (KOTK) en het Fonds Wetenschappelijk Onderzoek (FWO).
 
 | Workshop | Voor wie | Link |
