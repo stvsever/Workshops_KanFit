@@ -510,7 +510,7 @@ function renderAdjudicate(sec){
   return shown.map(it=>`
     <div class="card">
       ${adjScenario(sec, it)}
-      <div class="adj-q">${q}</div>
+      ${sec.question_once?'':`<div class="adj-q">${q}</div>`}
       ${choiceRow(it.id, opts, sec.choice_order)}</div>`).join('');
 }
 
